@@ -142,6 +142,18 @@ describe("API - GET", () => {
       });
     });
   });
+
+  it("GET /reviews does not expose the author password hash", () => {
+    cy.request(`${env.apiUrl}/reviews`).then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body).to.be.an("array").and.not.be.empty;
+
+      response.body.forEach((review) => {
+        expect(review.author).to.not.have.property("password");
+        expect(review.author).to.not.have.property("salt");
+      });
+    });
+  });
 });
 
 describe("API - POST", () => {
