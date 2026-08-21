@@ -29,7 +29,7 @@ const addProductToCart = () =>
     return cy.wrap(product, { log: false });
   });
 
-describe("Smoke - parcours critique", () => {
+describe("E2E - complete user journey", () => {
   it("the home page loads with featured products", () => {
     cy.visit("/");
     cy.getBySel("product-home").should("have.length", 3);
