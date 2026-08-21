@@ -1,0 +1,45 @@
+services:
+  bliss-bath-bdd:
+    container_name: bliss-bath-bdd
+    image: mariadb:11.7.2
+    environment:
+      - MYSQL_DATABASE=jardin_actuel
+      - MYSQL_ROOT_PASSWORD=jardin
+      - MYSQL_USER=jardin
+      - MYSQL_PASSWORD=jardin
+    volumes:
+      - ./data:/docker-entrypoint-initdb.d
+      - ./mysql:/var/lib/mysql
+    networks:
+      - symfony
+    healthcheck:
+      test: ['CMD', '/usr/local/bin/healthcheck.sh', '--innodb_initialized']
+      start_period: 15s
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  bliss-bath-symfony:
+    container_name: bliss-bath-symfony
+    image: ghcr.io/openclassrooms-student-center/eco-bliss-bath-backend:2-0-0
+    ports:
+      - 8081:8081
+    environment:
+      - DATABASE_URL=mysql://root:jardin@bliss-bath-bdd:3306/jardin_actuel?serverVersion=8&charset=utf8mb4
+    depends_on:
+      bliss-bath-bdd:
+        condition: service_healthy
+    networks:
+      - symfony
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+     
+networks:
+  symfony:
+  
+volumes:
+  data:

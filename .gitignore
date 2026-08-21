@@ -1,0 +1,17 @@
+# Dépendances
+node_modules/
+
+# Données de la base MariaDB (bind mount du conteneur docker)
+mysql/
+
+# Artefacts Cypress
+cypress/screenshots/
+cypress/videos/
+cypress/downloads/
+
+# Build Angular
+frontend/dist/
+frontend/.angular/
+
+# macOS
+.DS_Store
